@@ -13,8 +13,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/display.h>
 #include <zmk/usb.h>
 
-#include "draw_right_image.h"
-// #include "right_animation.h"
+#if CONFIG_NICE_VIEW_RIGHT
+    #include "draw_right_image.h"
+#else
+    #include "draw_left_image.h"
+#endif
 #include "battery.h"
 #include "output.h"
 #include "screen_peripheral.h"
@@ -112,8 +115,13 @@ int zmk_widget_screen_init(struct zmk_widget_screen *widget, lv_obj_t *parent) {
     lv_obj_align(top, LV_ALIGN_TOP_RIGHT, 0, 0);
     lv_canvas_set_buffer(top, widget->cbuf, BUFFER_SIZE, BUFFER_SIZE, LV_IMG_CF_TRUE_COLOR);
 
-    draw_right_image(widget->obj);
-    // draw_right_animation(widget->obj);
+    #if CONFIG_NICE_VIEW_RIGHT
+        draw_right_image(widget->obj);
+        // draw_right_animation(widget->obj);
+    #else
+        draw_left_image(widget->obj);
+        // draw_left_animation(widget->obj);
+    #endif
   
     sys_slist_append(&widgets, &widget->node);
     widget_battery_status_init();
